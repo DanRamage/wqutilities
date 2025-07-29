@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "wqutilities"
+version = "0.3.0"
+description = ""
+authors = ["DANRAMAGE <ChiefDan@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.11"
+shapely = "^2.1.1"
+yapsy = "^1.12.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
