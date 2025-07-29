@@ -1,6 +1,7 @@
 from shapely.wkt import loads as wkt_loads
 import csv
-import logging
+from wqutilities import logging
+
 logger = logging.getLogger(__name__)
 
 """

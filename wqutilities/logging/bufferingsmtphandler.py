@@ -23,7 +23,8 @@
 of SMTPHandler.
 Copyright (C) 2001-2002 Vinay Sajip. All Rights Reserved.
 """
-import logging, logging.handlers
+import logging
+from wqutilities import logging
 import traceback
 
 

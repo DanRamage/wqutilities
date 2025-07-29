@@ -1,12 +1,11 @@
 #Class borrowed from here: http://www.pastequestion.com/blog/python/send-email-with-attachments-using-python.html
 
-import smtplib, os, time, atexit
-import sys
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
-from email.mime.text import MIMEText
-from email.utils import COMMASPACE, formatdate
-from email import encoders as Encoders
+import smtplib, os, atexit
+from wqutilities.email import MIMEMultipart
+from wqutilities.email import MIMEBase
+from wqutilities.email import MIMEText
+from wqutilities.email import COMMASPACE, formatdate
+from wqutilities.email import encoders as Encoders
 
 class ConnectionError(smtplib.SMTPException): pass
 class LoginError(smtplib.SMTPException): pass

@@ -1,7 +1,7 @@
-import logging.config
+from wqutilities import logging
 
 from yapsy.IPlugin import IPlugin
-from multiprocessing import Process, Queue
+from multiprocessing import Process
 
 logger = logging.getLogger(__name__)
 

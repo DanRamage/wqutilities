@@ -1,5 +1,5 @@
 import csv
-import logging
+from wqutilities import logging
 from sample_sites import SamplingSites
 from station_geometry import StationGeometry, GeometryList
 from shapely.wkt import loads as wkt_loads
