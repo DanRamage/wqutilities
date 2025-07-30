@@ -1,3 +1,9 @@
+class data_result_types:
+  NO_TYPE = 0
+  SAMPLING_DATA_TYPE = 1
+  MODEL_DATA_TYPE = 2
+
+
 class wq_defines:
   NO_DATA = -9999.0
 
