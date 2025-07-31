@@ -11,8 +11,10 @@ logger = logging.getLogger(__name__)
 class GenericProcessingEngine(Generic[T]):
     """Generic processing engine for any data type with plugin management."""
 
-    def __init__(self, max_workers: int = 5, plugin_dirs: Dict[str, str] = None,
-                 plugins_enabled: Dict[str, bool], config_dirs: List[str] = None):
+    def __init__(self, max_workers: int = 5,
+                 plugin_dirs: Dict[str, str] = None,
+                 plugins_enabled: Dict[str, bool] = None,
+                 config_dirs: List[str] = None):
       self.collector_plugins: Dict[str, BaseCollectorPlugin[T]] = {}
       self.output_plugins: Dict[str, BaseOutputPlugin[T]] = {}
       self.data_items: Dict[str, T] = {}
