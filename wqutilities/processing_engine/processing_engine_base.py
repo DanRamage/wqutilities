@@ -52,7 +52,7 @@ class GenericProcessingEngine(Generic[T]):
                                           [],
                                           BaseCollectorPlugin)
       # Load plugins and configurations
-      self.plugin_configs = PluginLoader.load_plugin_configs(self.config_dirs)
+      self.plugin_configs = PluginLoader.load_plugin_configs()
 
       # Load collector plugins
       collector_classes = PluginLoader.load_plugins_from_directory(
