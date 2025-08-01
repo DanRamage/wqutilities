@@ -36,12 +36,12 @@ class GenericProcessingEngine(Generic[T]):
       }
 
       # Config directories - can include plugin directories and additional paths
-
+      '''
       additional_config_dirs = config_dirs or []
       self.config_dirs = PluginLoader.find_all_config_directories(
         self.plugin_dirs, additional_config_dirs
       )
-
+      '''
       self.auto_load_plugins()
 
     def auto_load_plugins(self):
