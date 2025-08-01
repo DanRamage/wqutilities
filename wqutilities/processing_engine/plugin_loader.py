@@ -18,8 +18,8 @@ import importlib.util
 import inspect
 
 class PluginLoader:
-    def __init__(self, plugin_dir: List[str],
-                 config_dirs: List[str],
+    def __init__(self, plugin_dir: str,
+                 config_dirs: str,
                  base_class: Type):
         self.plugin_dir = plugin_dir
         self.config_dirs = plugin_dir
