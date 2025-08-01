@@ -22,10 +22,13 @@ class PluginLoader:
                  config_dirs: List[str],
                  base_class: Type):
         self.plugin_dir = plugin_dir
-        self.config_dirs = config_dirs
+        self.config_dirs = plugin_dir
+        if len(config_dirs):
+            self.config_dirs.extend(config_dirs)
         self.base_class = base_class
         self.plugins = []
         self.configs = {}
+
     def load_plugin_configs(self):
         """
         Load plugin configurations from JSON files in multiple directories.
