@@ -1,7 +1,8 @@
 import csv
-from wqutilities import logging
-from sample_sites import SamplingSites
-from station_geometry import StationGeometry, GeometryList
+
+import logging.config
+from .sample_sites import SamplingSites
+from .station_geometry import StationGeometry, GeometryList
 from shapely.wkt import loads as wkt_loads
 from shapely.geometry import mapping
 
