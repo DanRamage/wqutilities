@@ -5,6 +5,7 @@ import sys
 import importlib.util
 import inspect
 from pathlib import Path
+import configparser
 
 from .plugin_base import PluginConfig
 
@@ -57,6 +58,7 @@ class PluginLoader:
 
       except Exception as e:
         logging.error(f"Failed to load plugin from {plugin_file}: {str(e)}")
+        logging.exception(e)
 
     return plugins
 
@@ -92,6 +94,31 @@ class PluginLoader:
             config=config_data.get('config', {}),
             retry_count=config_data.get('retry_count', 3),
             timeout=config_data.get('timeout', 30)
+          )
+          logging.info(f"Loaded config for plugin: {plugin_name} from {config_dir}")
+
+        except Exception as e:
+          logging.error(f"Failed to load config from {config_file}: {str(e)}")
+
+      for config_file in config_path.glob("*.ini"):
+        try:
+          config_file = configparser.SafeConfigParser(
+            defaults={
+              'enabled': True,
+              'config': {},
+              'retry_count': 3,
+              'timeout': 30
+            }
+          )
+          config_file.read(config_file)
+
+          plugin_name = config_file.stem
+          configs[plugin_name] = PluginConfig(
+            name=plugin_name,
+            enabled=config_file.get('default', 'enabled'),
+            config=config_file.get('default', 'config'),
+            retry_count=config_file.get('default', 'retry_count'),
+            timeout=config_file.get('default', 'timeout')
           )
           logging.info(f"Loaded config for plugin: {plugin_name} from {config_dir}")
 
