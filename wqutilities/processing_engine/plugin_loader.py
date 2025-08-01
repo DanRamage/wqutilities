@@ -41,13 +41,11 @@ class PluginLoader:
         """
         configs = {}
 
-        for config_dir in self.config_dirs:
-            config_path = Path(config_dir)
+        config_path = Path(self.config_dirs)
 
-            if not config_path.exists():
-                logging.warning(f"Config directory does not exist: {config_dir}")
-                continue
-
+        if not config_path.exists():
+            logging.warning(f"Config directory does not exist: {config_path}")
+        else:
             for config_file in config_path.glob("*.json"):
                 try:
                     with open(config_file, 'r') as f:
@@ -61,7 +59,7 @@ class PluginLoader:
                         retry_count=config_data.get('retry_count', 3),
                         timeout=config_data.get('timeout', 30)
                     )
-                    logging.info(f"Loaded config for plugin: {plugin_name} from {config_dir}")
+                    logging.info(f"Loaded config for plugin: {plugin_name} from {config_path}")
 
                 except Exception as e:
                     logging.error(f"Failed to load config from {config_file}: {str(e)}")
@@ -86,7 +84,7 @@ class PluginLoader:
                         retry_count=config_file.get('default', 'retry_count'),
                         timeout=config_file.get('default', 'timeout')
                     )
-                    logging.info(f"Loaded config for plugin: {plugin_name} from {config_dir}")
+                    logging.info(f"Loaded config for plugin: {plugin_name} from {config_path}")
 
                 except Exception as e:
                     logging.error(f"Failed to load config from {config_file}: {str(e)}")
