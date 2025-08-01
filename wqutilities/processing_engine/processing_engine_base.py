@@ -41,13 +41,17 @@ class GenericProcessingEngine(Generic[T]):
         self.plugin_dirs, additional_config_dirs
       )
 
-      # Load plugins and configurations
-      self.plugin_configs = PluginLoader.load_plugin_configs(self.config_dirs)
       self.auto_load_plugins()
 
     def auto_load_plugins(self):
       """Automatically load all plugins from configured directories."""
       self.logger.info("Auto-loading plugins from directories")
+
+      self._collector_plugins = PluginLoader(self.plugin_dirs['collectors'],
+                                          self.config_dirs,
+                                          BaseCollectorPlugin)
+      # Load plugins and configurations
+      self.plugin_configs = PluginLoader.load_plugin_configs(self.config_dirs)
 
       # Load collector plugins
       collector_classes = PluginLoader.load_plugins_from_directory(

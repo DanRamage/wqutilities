@@ -26,7 +26,7 @@ class PluginLoader:
         self.base_class = base_class
         self.plugins = []
         self.configs = {}
-    def load_plugin_configs(self) -> Dict[str, PluginConfig]:
+    def load_plugin_configs(self):
         """
         Load plugin configurations from JSON files in multiple directories.
 
