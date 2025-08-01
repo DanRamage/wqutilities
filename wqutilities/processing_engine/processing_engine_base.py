@@ -49,7 +49,7 @@ class GenericProcessingEngine(Generic[T]):
       self.logger.info("Auto-loading plugins from directories")
 
       self._collector_plugins = PluginLoader(self.plugin_dirs['collectors'],
-                                          self.config_dirs,
+                                          [],
                                           BaseCollectorPlugin)
       # Load plugins and configurations
       self.plugin_configs = PluginLoader.load_plugin_configs(self.config_dirs)
