@@ -66,6 +66,7 @@ class GenericProcessingEngine(Generic[T]):
 
         except Exception as e:
           self.logger.error(f"Failed to instantiate collector plugin {class_name}: {str(e)}")
+          self.logger.exception(e)
 
       # Load output plugins
       output_classes = PluginLoader.load_plugins_from_directory(
@@ -84,6 +85,7 @@ class GenericProcessingEngine(Generic[T]):
 
         except Exception as e:
           self.logger.error(f"Failed to instantiate output plugin {class_name}: {str(e)}")
+          self.logger.exception(e)
 
     def register_collector_plugin(self, plugin: BaseCollectorPlugin[T]):
       """Register a collector plugin."""
