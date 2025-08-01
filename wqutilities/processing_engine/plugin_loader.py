@@ -9,6 +9,116 @@ import configparser
 
 from .plugin_base import PluginConfig
 
+import os
+import importlib.util
+import inspect
+
+import os
+import importlib.util
+import inspect
+
+class PluginLoader:
+    def __init__(self, plugin_dir: str,
+                 config_dirs: List[str],
+                 base_class: Type):
+        self.plugin_dir = plugin_dir
+        self.config_dirs = config_dirs
+        self.base_class = base_class
+        self.plugins = []
+        self.configs = {}
+    def load_plugin_configs(self) -> Dict[str, PluginConfig]:
+        """
+        Load plugin configurations from JSON files in multiple directories.
+
+        Args:
+            config_dirs: List of directories containing JSON configuration files
+
+        Returns:
+            Dictionary of plugin name to PluginConfig
+        """
+        configs = {}
+
+        for config_dir in self.config_dirs:
+            config_path = Path(config_dir)
+
+            if not config_path.exists():
+                logging.warning(f"Config directory does not exist: {config_dir}")
+                continue
+
+            for config_file in config_path.glob("*.json"):
+                try:
+                    with open(config_file, 'r') as f:
+                        config_data = json.load(f)
+
+                    plugin_name = config_file.stem
+                    configs[plugin_name] = PluginConfig(
+                        name=plugin_name,
+                        enabled=config_data.get('enabled', True),
+                        config=config_data.get('config', {}),
+                        retry_count=config_data.get('retry_count', 3),
+                        timeout=config_data.get('timeout', 30)
+                    )
+                    logging.info(f"Loaded config for plugin: {plugin_name} from {config_dir}")
+
+                except Exception as e:
+                    logging.error(f"Failed to load config from {config_file}: {str(e)}")
+
+            for config_file in config_path.glob("*.ini"):
+                try:
+                    config_file = configparser.SafeConfigParser(
+                        defaults={
+                            'enabled': True,
+                            'config': {},
+                            'retry_count': 3,
+                            'timeout': 30
+                        }
+                    )
+                    config_file.read(config_file)
+
+                    plugin_name = config_file.stem
+                    self._configs[plugin_name] = PluginConfig(
+                        name=plugin_name,
+                        enabled=config_file.get('default', 'enabled'),
+                        config=config_file.get('default', 'config'),
+                        retry_count=config_file.get('default', 'retry_count'),
+                        timeout=config_file.get('default', 'timeout')
+                    )
+                    logging.info(f"Loaded config for plugin: {plugin_name} from {config_dir}")
+
+                except Exception as e:
+                    logging.error(f"Failed to load config from {config_file}: {str(e)}")
+
+        return self.configs
+
+    def discover_plugins(self):
+        for filename in os.listdir(self.plugin_dir):
+            if filename.endswith(".py") and not filename.startswith("__"):
+                module_path = os.path.join(self.plugin_dir, filename)
+                module_name = os.path.splitext(filename)[0]
+                plugin = self._load_plugin(module_name, module_path)
+                if plugin:
+                    self.plugins.extend(plugin)
+
+    def _load_plugin(self, module_name, module_path):
+        spec = importlib.util.spec_from_file_location(module_name, module_path)
+        if spec and spec.loader:
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            return self._find_plugins_in_module(module)
+        return []
+
+    def _find_plugins_in_module(self, module):
+        found_plugins = []
+        for name, obj in inspect.getmembers(module, inspect.isclass):
+            if self.base_class and issubclass(obj, self.base_class) and obj is not self.base_class:
+                found_plugins.append(obj)
+        return found_plugins
+
+
+    def get_plugins(self):
+        return self.plugins
+
+'''
 class PluginLoader:
   """Utility class for loading plugins from directories."""
 
@@ -150,3 +260,4 @@ class PluginLoader:
       config_dirs.extend(additional_config_dirs)
 
     return config_dirs
+'''
