@@ -91,7 +91,7 @@ class PluginLoader:
 
         return self.configs
 
-    def discover_plugins(self):
+    def discover_plugins(self) -> List[Type[PluginConfig]]:
         for filename in os.listdir(self.plugin_dir):
             if filename.endswith(".py") and not filename.startswith("__"):
                 module_path = os.path.join(self.plugin_dir, filename)
@@ -99,6 +99,8 @@ class PluginLoader:
                 plugin = self._load_plugin(module_name, module_path)
                 if plugin:
                     self.plugins.extend(plugin)
+
+        return self.plugins
 
     def _load_plugin(self, module_name, module_path):
         spec = importlib.util.spec_from_file_location(module_name, module_path)
