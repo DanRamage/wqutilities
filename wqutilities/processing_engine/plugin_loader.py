@@ -53,7 +53,7 @@ class PluginLoader:
 
                     plugin_name = config_file.stem
                     #plugin_name = config_data.get('name')
-                    configs[plugin_name] = PluginConfig(
+                    self.configs[plugin_name] = PluginConfig(
                         name=plugin_name,
                         enabled=config_data.get('enabled', True),
                         config=config_data.get('config', {}),
