@@ -99,7 +99,7 @@ class PluginLoader:
                 module_path = os.path.join(self.plugin_dir, filename)
                 module_name = os.path.splitext(filename)[0]
                 plugin = self._load_plugin(module_name, module_path)
-                if len(plugin):
+                if plugin:
                     self.plugins.extend(plugin)
 
         return self.plugins
@@ -113,10 +113,10 @@ class PluginLoader:
         return []
 
     def _find_plugins_in_module(self, module):
-        found_plugins = {}
+        found_plugins = []
         for name, obj in inspect.getmembers(module, inspect.isclass):
             if self.base_class and issubclass(obj, self.base_class) and obj is not self.base_class:
-                found_plugins[name] = obj
+                found_plugins.append(obj)
         return found_plugins
 
 
