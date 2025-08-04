@@ -61,7 +61,7 @@ class PluginLoader:
                         retry_count=config_data.get('retry_count', 3),
                         timeout=config_data.get('timeout', 30)
                     )
-                    logging.info(f"Loaded config for plugin: {plugin_name} from {config_path}")
+                    logging.info(f"Loaded config for plugin: {module_name} from {config_path}")
 
                 except Exception as e:
                     logging.error(f"Failed to load config from {config_file}: {str(e)}")
