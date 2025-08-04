@@ -103,7 +103,7 @@ class BaseCollectorPlugin(ABC, Generic[T]):
         pass
 
     def validate_config(self) -> bool:
-        if 'name' in self.plugin_config and 'module' in self.plugin_config:
+        if len(self.plugin_config.name) and len(self.plugin_config.module):
             return True
         return False
 
