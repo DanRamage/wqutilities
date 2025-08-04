@@ -116,7 +116,7 @@ class PluginLoader:
         found_plugins = {}
         for name, obj in inspect.getmembers(module, inspect.isclass):
             if self.base_class and issubclass(obj, self.base_class) and obj is not self.base_class:
-                found_plugins[name] = obj
+                found_plugins[module.__name__] = obj
         return found_plugins
 
 
