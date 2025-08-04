@@ -54,7 +54,8 @@ class PluginLoader:
                     plugin_name = config_file.stem
                     #plugin_name = config_data.get('name')
                     self.configs[plugin_name] = PluginConfig(
-                        name=plugin_name,
+                        name=config_data.get('name', plugin_name),
+                        module=config_data.get('module', plugin_name),
                         enabled=config_data.get('enabled', True),
                         config=config_data.get('config', {}),
                         retry_count=config_data.get('retry_count', 3),

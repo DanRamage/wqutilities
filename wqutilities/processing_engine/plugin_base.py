@@ -20,7 +20,8 @@ class PluginStatus(Enum):
 @dataclass
 class PluginConfig:
   """Configuration data for plugins."""
-  name: str
+  name: str = ""
+  module: str = ""
   enabled: bool = True
   config: Dict[str, Any] = None
   retry_count: int = 3
