@@ -51,8 +51,8 @@ class PluginLoader:
                     with open(config_file, 'r') as f:
                         config_data = json.load(f)
 
-                    #plugin_name = config_file.stem
-                    plugin_name = config_data.get('name')
+                    plugin_name = config_file.stem
+                    #plugin_name = config_data.get('name')
                     configs[plugin_name] = PluginConfig(
                         name=plugin_name,
                         enabled=config_data.get('enabled', True),
@@ -77,8 +77,8 @@ class PluginLoader:
                     )
                     config_file.read(config_file)
 
-                    #plugin_name = config_file.stem
-                    plugin_name = config_file.get('name')
+                    plugin_name = config_file.stem
+                    #plugin_name = config_file.get('name')
                     self._configs[plugin_name] = PluginConfig(
                         name=plugin_name,
                         enabled=config_file.get('default', 'enabled'),
