@@ -85,7 +85,7 @@ class BaseCollectorPlugin(ABC, Generic[T]):
     """Base class for data collection plugins."""
 
     def __init__(self, config: PluginConfig):
-        self.config = config
+        self.plugin_config = config
         self.status = PluginStatus.ENABLED if config.enabled else PluginStatus.DISABLED
         self.logger = logging.getLogger(f"collector.{config.name}")
         self.last_run = None
@@ -103,12 +103,12 @@ class BaseCollectorPlugin(ABC, Generic[T]):
         pass
 
     def validate_config(self) -> bool:
-        if 'name' in self.config and 'module' in self.config:
+        if 'name' in self.plugin_config.config and 'module' in self.plugin_config.config:
             return True
         return False
 
     def get_plugin_name(self) -> str:
-        return self.config.module
+        return self.plugin_config.module
 
     def is_enabled(self) -> bool:
         """Check if plugin is enabled."""
@@ -123,7 +123,7 @@ class BaseCollectorPlugin(ABC, Generic[T]):
         """Handle plugin errors."""
         self.error_count += 1
         self.logger.error(f"Plugin error (count: {self.error_count}): {str(error)}")
-        if self.error_count >= self.config.retry_count:
+        if self.error_count >= self.plugin_config.retry_count:
             self.set_status(PluginStatus.ERROR)
 
 
@@ -131,7 +131,7 @@ class BaseOutputPlugin(ABC, Generic[T]):
     """Base class for data output plugins."""
 
     def __init__(self, config: PluginConfig):
-        self.config = config
+        self.plugin_config = config
         self.status = PluginStatus.ENABLED if config.enabled else PluginStatus.DISABLED
         self.logger = logging.getLogger(f"output.{config.name}")
         self.sent_count = 0
@@ -180,5 +180,5 @@ class BaseOutputPlugin(ABC, Generic[T]):
         """Handle plugin errors."""
         self.error_count += 1
         self.logger.error(f"Plugin error (count: {self.error_count}): {str(error)}")
-        if self.error_count >= self.config.retry_count:
+        if self.error_count >= self.plugin_config.retry_count:
             self.set_status(PluginStatus.ERROR)
