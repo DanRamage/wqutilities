@@ -96,15 +96,16 @@ class BaseCollectorPlugin(ABC, Generic[T]):
         """Collect data items from the data source."""
         pass
 
-    @abstractmethod
-    def validate_config(self) -> bool:
-        """Validate plugin configuration."""
-        pass
 
     @abstractmethod
     def get_data_type(self) -> str:
         """Return the type of data this plugin collects."""
         pass
+
+    def validate_config(self) -> bool:
+        if 'name' in self.config and 'module' in self.config:
+            return True
+        return False
 
     def get_plugin_name(self) -> str:
         return self.config.module
