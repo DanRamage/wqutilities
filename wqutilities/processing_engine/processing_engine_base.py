@@ -70,7 +70,7 @@ class GenericProcessingEngine(Generic[T]):
           self.logger.error(f"Failed to instantiate collector plugin {class_name}: {str(e)}")
           self.logger.exception(e)
 
-      output_plugin_loader = PluginLoader(self.plugin_dirs['collectors'],
+      output_plugin_loader = PluginLoader(self.plugin_dirs['outputs'],
                                           [],
                                           BaseCollectorPlugin)
 
