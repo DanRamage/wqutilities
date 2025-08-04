@@ -26,7 +26,7 @@ class PluginLoader:
         if len(config_dirs):
             self.config_dirs.extend(config_dirs)
         self.base_class = base_class
-        self.plugins = {}
+        self.plugins = []
         self.configs = {}
 
     def load_plugin_configs(self):
