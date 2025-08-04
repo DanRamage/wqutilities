@@ -57,7 +57,7 @@ class GenericProcessingEngine(Generic[T]):
       # Load collector plugins
       collector_classes = self._collector_plugins.discover_plugins()
 
-      for plugin_class in collector_classes.items():
+      for plugin_class in collector_classes:
         try:
           # Get configuration for this plugin
           config_name = class_name.lower().replace('collector', '').replace('plugin', '')
