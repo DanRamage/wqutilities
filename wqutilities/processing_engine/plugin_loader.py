@@ -51,7 +51,8 @@ class PluginLoader:
                     with open(config_file, 'r') as f:
                         config_data = json.load(f)
 
-                    plugin_name = config_file.stem
+                    #plugin_name = config_file.stem
+                    plugin_name = config_file.get('name')
                     configs[plugin_name] = PluginConfig(
                         name=plugin_name,
                         enabled=config_data.get('enabled', True),
