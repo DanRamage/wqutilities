@@ -48,14 +48,14 @@ class GenericProcessingEngine(Generic[T]):
       """Automatically load all plugins from configured directories."""
       self.logger.info("Auto-loading plugins from directories")
 
-      self._collector_plugins = PluginLoader(self.plugin_dirs['collectors'],
+      collector_plugins = PluginLoader(self.plugin_dirs['collectors'],
                                           [],
                                           BaseCollectorPlugin)
       # Load plugins and configurations
-      self.plugin_configs = self._collector_plugins.load_plugin_configs()
+      self.plugin_configs = collector_plugins.load_plugin_configs()
 
       # Load collector plugins
-      collector_classes = self._collector_plugins.discover_plugins()
+      collector_classes = collector_plugins.discover_plugins()
 
       for plugin_class in collector_classes:
         try:
@@ -70,16 +70,17 @@ class GenericProcessingEngine(Generic[T]):
           self.logger.error(f"Failed to instantiate collector plugin {class_name}: {str(e)}")
           self.logger.exception(e)
 
-      # Load output plugins
-      output_classes = PluginLoader.load_plugins_from_directory(
-        self.plugin_dirs['outputs'], BaseOutputPlugin
-      )
+      output_plugin_loader = PluginLoader(self.plugin_dirs['collectors'],
+                                          [],
+                                          BaseCollectorPlugin)
 
-      for class_name, plugin_class in output_classes.items():
+      # Load output plugins
+      output_classes = output_plugin_loader.discover_plugins()
+
+      for plugin_class in output_classes:
         try:
-          # Get configuration for this plugin
-          config_name = class_name.lower().replace('output', '').replace('plugin', '')
-          config = self.plugin_configs.get(config_name, PluginConfig(config_name))
+          class_name = plugin_class.__name__
+          config = self.plugin_configs.get(class_name, PluginConfig(class_name))
 
           # Create and register plugin instance
           plugin_instance = plugin_class(config)
