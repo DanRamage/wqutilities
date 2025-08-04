@@ -60,9 +60,7 @@ class GenericProcessingEngine(Generic[T]):
       for plugin_class in collector_classes:
         try:
           class_name = plugin_class.__name__
-          # Get configuration for this plugin
-          config_name = class_name.lower().replace('collector', '').replace('plugin', '')
-          config = self.plugin_configs.get(config_name, PluginConfig(config_name))
+          config = self.plugin_configs.get(class_name, PluginConfig(class_name))
 
           # Create and register plugin instance
           plugin_instance = plugin_class(config)
