@@ -51,11 +51,11 @@ class PluginLoader:
                     with open(config_file, 'r') as f:
                         config_data = json.load(f)
 
-                    plugin_name = config_file.stem
+                    module_name = config_data.get('module', config_file.stem)
                     #plugin_name = config_data.get('name')
-                    self.configs[plugin_name] = PluginConfig(
-                        name=config_data.get('name', plugin_name),
-                        module=config_data.get('module', plugin_name),
+                    self.configs[module_name] = PluginConfig(
+                        name=config_file.stem,
+                        module=module_name,
                         enabled=config_data.get('enabled', True),
                         config=config_data.get('config', {}),
                         retry_count=config_data.get('retry_count', 3),
