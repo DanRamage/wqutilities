@@ -131,7 +131,7 @@ class GenericProcessingEngine(Generic[T]):
         for future in as_completed(future_to_plugin):
           plugin_name = future_to_plugin[future]
           try:
-            data_items = future.result(timeout=self.collector_plugins[plugin_name].config.timeout)
+            data_items = future.result(timeout=self.collector_plugins[plugin_name].plugin_config.timeout)
             all_data.extend(data_items)
             self.logger.info(f"Collected {len(data_items)} items from {plugin_name}")
           except Exception as e:
@@ -177,7 +177,7 @@ class GenericProcessingEngine(Generic[T]):
 
         for future, plugin_name, item_id in futures:
           try:
-            success = future.result(timeout=self.output_plugins[plugin_name].config.timeout)
+            success = future.result(timeout=self.output_plugins[plugin_name].plugin_config.timeout)
             if success:
               self.output_plugins[plugin_name].sent_count += 1
               self.logger.info(f"Sent item {item_id} via {plugin_name}")
