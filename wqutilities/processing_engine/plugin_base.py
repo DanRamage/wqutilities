@@ -31,19 +31,16 @@ class PluginConfig:
         if self.config is None:
             self.config = {}
 
-
+@dataclass
 class BaseDataItem(ABC):
     """Base class for all data items that can be processed by the engine."""
-
-    def __init__(self, item_id: str, item_type: str, source: str,
-                 created_at: datetime = None):
-        self.item_id = item_id
-        self.item_type = item_type
-        self.source = source
-        self.created_at = created_at or datetime.now()
-        self.updated_at = datetime.now()
-        self.metadata: Dict[str, Any] = {}
-        self.tags: List[str] = []
+    item_id: str
+    item_type: str
+    source: str
+    created_at: datetime
+    updated_at: datetime
+    metadata:  {}
+    tags: []
 
     @abstractmethod
     def validate(self) -> bool:
@@ -54,7 +51,13 @@ class BaseDataItem(ABC):
     def to_dict(self) -> Dict[str, Any]:
         """Convert data item to dictionary representation."""
         pass
+    @abstractmethod
+    def get_record(self) -> Dict[str, Any]:
+        pass
 
+    @abstractmethod
+    def get_record_datetime(self) -> datetime:
+        pass
     def add_metadata(self, key: str, value: Any) -> None:
         """Add metadata to the data item."""
         self.metadata[key] = value
