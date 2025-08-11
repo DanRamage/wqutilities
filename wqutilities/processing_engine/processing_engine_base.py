@@ -175,12 +175,12 @@ class GenericProcessingEngine(Generic[T]):
       if all(filter_func(data_items) for filter_func in self.filters):
         # Apply processors
         for processor_func in self.processors:
-          data_item = processor_func(data_items)
+          data_items = processor_func(data_items)
 
         processed_data = data_items
         #processed_data.extend(data_items)
-        for item in self.data_items:
-          self.data_items[item.item_id] = data_item
+        for data_item in self.data_items:
+          self.data_items[data_item.item_id] = data_item
 
       return processed_data
 
