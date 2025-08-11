@@ -15,8 +15,8 @@ class GenericProcessingEngine(Generic[T]):
                  plugin_dirs: Dict[str, str] = None,
                  plugins_enabled: Dict[str, bool] = None,
                  config_dirs: List[str] = None,
-                 batch_process_data: bool = True,
-                 batch_distribute_data: bool = True):
+                 process_data_batch: bool = True,
+                 distribute_data_batch: bool = True):
       self.collector_plugins: Dict[str, BaseCollectorPlugin[T]] = {}
       self.output_plugins: Dict[str, BaseOutputPlugin[T]] = {}
       self.data_items: Dict[str, T] = {}
@@ -25,8 +25,8 @@ class GenericProcessingEngine(Generic[T]):
       self.running = False
       self.filters: List[Callable[[T], bool]] = []
       self.processors: List[Callable[[T], T]] = []
-      self.batch_process_data = batch_process_data
-      self.batch_distribute_data = batch_distribute_data
+      self.process_data_batch = process_data_batch
+      self.distribute_data_batch = distribute_data_batch
 
       # Plugin directories
       self.plugin_dirs = plugin_dirs or {
@@ -222,7 +222,7 @@ class GenericProcessingEngine(Generic[T]):
       self.logger.info(f"Collected {len(collected_data)} total items")
 
       # Process data
-      if self.batch_process_data:
+      if self.process_data_batch:
         processed_data = self.batch_process_data(collected_data)
       else:
         processed_data = self.process_data(collected_data)
