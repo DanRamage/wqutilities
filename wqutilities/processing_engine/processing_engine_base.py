@@ -14,7 +14,9 @@ class GenericProcessingEngine(Generic[T]):
     def __init__(self, max_workers: int = 5,
                  plugin_dirs: Dict[str, str] = None,
                  plugins_enabled: Dict[str, bool] = None,
-                 config_dirs: List[str] = None):
+                 config_dirs: List[str] = None,
+                 batch_process_data: bool = True,
+                 batch_distribute_data: bool = True):
       self.collector_plugins: Dict[str, BaseCollectorPlugin[T]] = {}
       self.output_plugins: Dict[str, BaseOutputPlugin[T]] = {}
       self.data_items: Dict[str, T] = {}
@@ -23,6 +25,8 @@ class GenericProcessingEngine(Generic[T]):
       self.running = False
       self.filters: List[Callable[[T], bool]] = []
       self.processors: List[Callable[[T], T]] = []
+      self.batch_process_data = batch_process_data
+      self.batch_distribute_data = batch_distribute_data
 
       # Plugin directories
       self.plugin_dirs = plugin_dirs or {
@@ -163,23 +167,40 @@ class GenericProcessingEngine(Generic[T]):
           self.data_items[data_item.item_id] = data_item
 
       return processed_data
+    def batch_process_data(self, data_items: List[T]) -> List[T]:
+      """Process data items through filters and processors."""
+      processed_data = []
+
+      # Apply filters
+      if all(filter_func(data_items) for filter_func in self.filters):
+        # Apply processors
+        for processor_func in self.processors:
+          data_item = processor_func(data_items)
+
+        processed_data = data_items
+        #processed_data.extend(data_items)
+        for item in self.data_items:
+          self.data_items[item.item_id] = data_item
+
+      return processed_data
 
     def distribute_data(self, data_items: List[T]):
       """Distribute data items to all enabled output plugins."""
       with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
         futures = []
 
-        for data_item in data_items:
-          for plugin_name, plugin in self.output_plugins.items():
-            if plugin.is_enabled() and plugin.should_send(data_item):
-              future = executor.submit(self._send_via_plugin, plugin, data_item)
-              futures.append((future, plugin_name, data_item.item_id))
+        #for data_item in data_items:
+        for plugin_name, plugin in self.output_plugins.items():
+          if plugin.is_enabled() and plugin.should_send(data_items):
+            future = executor.submit(self._send_via_plugin, plugin, data_items)
+            futures.append((future, plugin_name, data_items.item_id))
 
         for future, plugin_name, item_id in futures:
           try:
             success = future.result(timeout=self.output_plugins[plugin_name].plugin_config.timeout)
             if success:
-              self.output_plugins[plugin_name].sent_count += 1
+              self.output_plugins[plugin_name].sent_count += len(data_items)
+              #self.output_plugins[plugin_name].sent_count += 1
               self.logger.info(f"Sent item {item_id} via {plugin_name}")
           except Exception as e:
             self.output_plugins[plugin_name].handle_error(e)
@@ -201,7 +222,10 @@ class GenericProcessingEngine(Generic[T]):
       self.logger.info(f"Collected {len(collected_data)} total items")
 
       # Process data
-      processed_data = self.process_data(collected_data)
+      if self.batch_process_data:
+        processed_data = self.batch_process_data(collected_data)
+      else:
+        processed_data = self.process_data(collected_data)
       self.logger.info(f"Processed {len(processed_data)} items")
 
       # Distribute data
