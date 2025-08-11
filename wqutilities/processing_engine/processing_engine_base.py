@@ -206,16 +206,31 @@ class GenericProcessingEngine(Generic[T]):
 
     def batch_distribute_data(self, data_items: List[T]):
       """Distribute data items to all enabled output plugins."""
+      plugin_batches = {}
+
+      for data_item in data_items:
+        for plugin_name, plugin in self.output_plugins.items():
+          if plugin.is_enabled() and plugin.should_send(data_item):
+            if plugin_name not in plugin_batches:
+              plugin_batches[plugin_name] = []
+            plugin_batches[plugin_name].append(data_item)
+
       with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
         futures = []
+        for plugin_name, items in plugin_batches.items():
+          plugin = self.output_plugins[plugin_name]
+          # Use batch sending if supported
+          future = executor.submit(self._send_via_plugin_batch, plugin, items)
+          futures.append((future, plugin_name, len(items)))
 
+        '''
         #for data_item in data_items:
         for plugin_name, plugin in self.output_plugins.items():
           for data_item in data_items:
             if plugin.is_enabled() and plugin.should_send(data_item):
               future = executor.submit(self._send_via_plugin, plugin, data_items)
               futures.append((future, plugin_name, data_items.item_id))
-
+        '''
         for future, plugin_name, item_id in futures:
           try:
             success = future.result(timeout=self.output_plugins[plugin_name].plugin_config.timeout)
@@ -225,6 +240,14 @@ class GenericProcessingEngine(Generic[T]):
               self.logger.info(f"Sent item {item_id} via {plugin_name}")
           except Exception as e:
             self.output_plugins[plugin_name].handle_error(e)
+
+    def _send_via_plugin_batch(self, plugin: BaseOutputPlugin[T], data_items: List[T]) -> bool:
+      """Send data item via a single output plugin."""
+      try:
+        return plugin.send_data(data_items)
+      except Exception as e:
+        plugin.handle_error(e)
+        return False
 
     def _send_via_plugin(self, plugin: BaseOutputPlugin[T], data_item: T) -> bool:
       """Send data item via a single output plugin."""
