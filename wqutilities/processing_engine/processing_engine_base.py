@@ -76,7 +76,7 @@ class GenericProcessingEngine(Generic[T]):
 
       output_plugin_loader = PluginLoader(self.plugin_dirs['outputs'],
                                           [],
-                                          BaseCollectorPlugin)
+                                          BaseOutputPlugin)
 
       # Load output plugins
       output_classes = output_plugin_loader.discover_plugins()

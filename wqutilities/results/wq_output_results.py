@@ -15,6 +15,7 @@ class WQSampleData:
     self._station = kwargs.get('station', None)
     self._date_time = kwargs.get('date_time', None)
     self._value = kwargs.get('value', None)
+    self._units = kwargs.get('units', None)
 
   @property
   def station(self):
