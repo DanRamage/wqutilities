@@ -189,6 +189,26 @@ class GenericProcessingEngine(Generic[T]):
       with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
         futures = []
 
+        for data_item in data_items:
+          for plugin_name, plugin in self.output_plugins.items():
+            if plugin.is_enabled() and plugin.should_send(data_item):
+              future = executor.submit(self._send_via_plugin, plugin, data_item)
+              futures.append((future, plugin_name, data_item.item_id))
+
+        for future, plugin_name, item_id in futures:
+          try:
+            success = future.result(timeout=self.output_plugins[plugin_name].config.timeout)
+            if success:
+              self.output_plugins[plugin_name].sent_count += 1
+              self.logger.info(f"Sent item {item_id} via {plugin_name}")
+          except Exception as e:
+            self.output_plugins[plugin_name].handle_error(e)
+
+    def batch_distribute_data(self, data_items: List[T]):
+      """Distribute data items to all enabled output plugins."""
+      with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+        futures = []
+
         #for data_item in data_items:
         for plugin_name, plugin in self.output_plugins.items():
           if plugin.is_enabled() and plugin.should_send(data_items):
@@ -230,7 +250,10 @@ class GenericProcessingEngine(Generic[T]):
 
       # Distribute data
       if processed_data:
-        self.distribute_data(processed_data)
+        if self.distribute_data_batch:
+          self.batch_distribute_data(processed_data)
+        else:
+          self.distribute_data(processed_data)
 
       self.logger.info("Processing cycle complete")
 
