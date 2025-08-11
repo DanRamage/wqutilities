@@ -211,9 +211,10 @@ class GenericProcessingEngine(Generic[T]):
 
         #for data_item in data_items:
         for plugin_name, plugin in self.output_plugins.items():
-          if plugin.is_enabled() and plugin.should_send(data_items):
-            future = executor.submit(self._send_via_plugin, plugin, data_items)
-            futures.append((future, plugin_name, data_items.item_id))
+          for data_item in data_items:
+            if plugin.is_enabled() and plugin.should_send(data_item):
+              future = executor.submit(self._send_via_plugin, plugin, data_items)
+              futures.append((future, plugin_name, data_items.item_id))
 
         for future, plugin_name, item_id in futures:
           try:
