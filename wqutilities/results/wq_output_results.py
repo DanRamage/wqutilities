@@ -16,6 +16,7 @@ class WQSampleData:
     self._date_time = kwargs.get('date_time', None)
     self._value = kwargs.get('value', None)
     self._units = kwargs.get('units', None)
+    self._sample_type = kwargs.get('sample_type', None)
 
   @property
   def station(self):
@@ -37,6 +38,20 @@ class WQSampleData:
   @value.setter
   def value(self, value):
     self._value = value
+
+  @property
+  def units(self):
+    return self._units
+  @units.setter
+  def units(self, units):
+    self._units = units
+
+  @property
+  def sample_type(self):
+    return self._sample_type
+  @sample_type.setter
+  def sample_type(self, sample_type):
+    self._sample_type = sample_type
 
 class WQSamplesCollection:
   def __init__(self):

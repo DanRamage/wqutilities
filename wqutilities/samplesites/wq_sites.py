@@ -31,8 +31,7 @@ class WQSite(StationGeometry):
 
 
 """
-florida_sample_sites
-Overrides the default sampling_sites object so we can load the sites from the florida data.
+Overrides the default sampling_sites object so we can load the sites from the data.
 """
 
 
@@ -96,3 +95,8 @@ class WQSampleSites(SamplingSites):
                     line_num += 1
                 return True
         return False
+
+    def add_site(self, site: WQSite):
+        if self.get_site(site.name) is None:
+            self.append(site)
+
