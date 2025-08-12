@@ -12,9 +12,9 @@ logger = logging.getLogger(__name__)
 class WQSite(StationGeometry):
     def __init__(self, **kwargs):
         StationGeometry.__init__(self, kwargs['name'], kwargs['wkt'])
-        self.epa_id = kwargs['epa_id']
-        self.description = kwargs['description']
-        self.county = kwargs['county']
+        self.epa_id = kwargs.get('epa_id', "")
+        self.description = kwargs.get('description', "")
+        self.county = kwargs.get('county', "")
         self.extents_geometry = None
         if 'extentswkt' in kwargs:
             if kwargs['extentswkt'] is not None:
