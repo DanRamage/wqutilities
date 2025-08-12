@@ -56,7 +56,7 @@ class GenericProcessingEngine(Generic[T]):
                                           [],
                                           BaseCollectorPlugin)
       # Load plugins and configurations
-      self.plugin_configs = collector_plugins.load_plugin_configs()
+      collector_plugin_configs = collector_plugins.load_plugin_configs()
 
       # Load collector plugins
       collector_classes = collector_plugins.discover_plugins()
@@ -64,7 +64,7 @@ class GenericProcessingEngine(Generic[T]):
       for plugin_class in collector_classes:
         try:
           class_name = plugin_class.__name__
-          config = self.plugin_configs.get(class_name, PluginConfig(class_name))
+          config = collector_plugin_configs.get(class_name, PluginConfig(class_name))
 
           # Create and register plugin instance
           plugin_instance = plugin_class(config)
@@ -77,6 +77,7 @@ class GenericProcessingEngine(Generic[T]):
       output_plugin_loader = PluginLoader(self.plugin_dirs['outputs'],
                                           [],
                                           BaseOutputPlugin)
+      output_plugin_configs = output_plugin_loader.load_plugin_configs()
 
       # Load output plugins
       output_classes = output_plugin_loader.discover_plugins()
@@ -84,7 +85,7 @@ class GenericProcessingEngine(Generic[T]):
       for plugin_class in output_classes:
         try:
           class_name = plugin_class.__name__
-          config = self.plugin_configs.get(class_name, PluginConfig(class_name))
+          config = output_plugin_configs.get(class_name, PluginConfig(class_name))
 
           # Create and register plugin instance
           plugin_instance = plugin_class(config)
