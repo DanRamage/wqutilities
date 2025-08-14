@@ -3,6 +3,7 @@ import logging.config
 import time
 import json
 import geojson
+from ..string_cleaners import safe_filename
 
 def contains(list, filter):
   for x in list:
@@ -227,7 +228,8 @@ class WQStationAdvisoriesFile:
   def create_file(self, out_file_directory, wq_samples):
     start_time = time.time()
     self.logger.debug("Starting create_file")
-    station_filename = os.path.join(out_file_directory, "%s.json" % (self.sample_site.name))
+    cleaned_name = safe_filename(self.sample_site.name.name)
+    station_filename = os.path.join(out_file_directory, f"{cleaned_name}.json")
     beach_advisories = []
     if self.sample_site.name in wq_samples:
       samples = wq_samples[self.sample_site.name]
