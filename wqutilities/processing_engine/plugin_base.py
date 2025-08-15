@@ -44,12 +44,13 @@ class BaseDataItem(ABC):
     tags: []
     '''
     def __init__(self, item_id: str, item_type: str, source: str,
-                 created_at: datetime = None):
+                 created_at: datetime = None,
+                 updated_at: datetime = None):
         self.item_id = item_id
         self.item_type = item_type
         self.source = source
         self.created_at = created_at or datetime.now()
-        self.updated_at = datetime.now()
+        self.updated_at = updated_at or datetime.now()
         self.metadata: Dict[str, Any] = {}
         self.tags: List[str] = []
 
