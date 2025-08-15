@@ -50,7 +50,7 @@ class BaseDataItem(ABC):
         self.item_type = item_type
         self.source = source
         self.created_at = created_at or datetime.now()
-        self.updated_at = updated_at or datetime.now()
+        self.updated_at = updated_at
         self.metadata: Dict[str, Any] = {}
         self.tags: List[str] = []
 
