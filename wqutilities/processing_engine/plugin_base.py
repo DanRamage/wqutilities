@@ -34,6 +34,7 @@ class PluginConfig:
 @dataclass
 class BaseDataItem(ABC):
     """Base class for all data items that can be processed by the engine."""
+    '''
     item_id: str
     item_type: str
     source: str
@@ -41,6 +42,16 @@ class BaseDataItem(ABC):
     updated_at: datetime
     metadata:  {}
     tags: []
+    '''
+    def __init__(self, item_id: str, item_type: str, source: str,
+                 created_at: datetime = None):
+        self.item_id = item_id
+        self.item_type = item_type
+        self.source = source
+        self.created_at = created_at or datetime.now()
+        self.updated_at = datetime.now()
+        self.metadata: Dict[str, Any] = {}
+        self.tags: List[str] = []
 
     @abstractmethod
     def validate(self) -> bool:
