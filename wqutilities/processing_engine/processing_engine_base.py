@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Dict, Any, List, Callable, Generic
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
-
+from pathlib import Path
 from .plugin_loader import PluginLoader
 from .plugin_base import BaseCollectorPlugin, BaseOutputPlugin, T, PluginConfig
 
@@ -12,11 +12,13 @@ class GenericProcessingEngine(Generic[T]):
     """Generic processing engine for any data type with plugin management."""
 
     def __init__(self, max_workers: int = 5,
+                 base_directoy: Path = Path("."),
                  plugin_dirs: Dict[str, str] = None,
                  plugins_enabled: Dict[str, bool] = None,
                  config_dirs: List[str] = None,
                  process_data_batch: bool = True,
                  distribute_data_batch: bool = True):
+      self.base_directoy = base_directoy
       self.collector_plugins: Dict[str, BaseCollectorPlugin[T]] = {}
       self.output_plugins: Dict[str, BaseOutputPlugin[T]] = {}
       self.data_items: Dict[str, T] = {}
