@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, Any, List, Generic, TypeVar
 from enum import Enum
 import json
@@ -26,6 +27,7 @@ class PluginConfig:
     config: Dict[str, Any] = None
     retry_count: int = 3
     timeout: int = 30
+    base_directory: Path = Path(__file__).resolve().parent
 
     def __post_init__(self):
         if self.config is None:
