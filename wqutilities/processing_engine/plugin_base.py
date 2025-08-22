@@ -27,7 +27,7 @@ class PluginConfig:
     config: Dict[str, Any] = None
     retry_count: int = 3
     timeout: int = 30
-    base_directory: Path = Path(__file__).resolve().parent
+    base_directory: Path = Path(".")
 
     def __post_init__(self):
         if self.config is None:
