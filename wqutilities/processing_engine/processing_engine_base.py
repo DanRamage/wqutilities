@@ -67,7 +67,7 @@ class GenericProcessingEngine(Generic[T]):
         try:
           class_name = plugin_class.__name__
           config = collector_plugin_configs.get(class_name, PluginConfig(class_name))
-          config['base_directoy'] = self.base_directoy
+          config.base_directoy = self.base_directoy
           # Create and register plugin instance
           plugin_instance = plugin_class(config)
           self.register_collector_plugin(plugin_instance)
@@ -88,7 +88,7 @@ class GenericProcessingEngine(Generic[T]):
         try:
           class_name = plugin_class.__name__
           config = output_plugin_configs.get(class_name, PluginConfig(class_name))
-          config['base_directoy'] = self.base_directoy
+          config.base_directoy = self.base_directoy
 
           # Create and register plugin instance
           plugin_instance = plugin_class(config)
